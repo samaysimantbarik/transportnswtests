@@ -1,0 +1,5 @@
+com\nsw\transportnsw\servicetesting\steps\Hooks.class
+com\nsw\transportnsw\uitesting\steps\TripPlannerSteps.class
+com\nsw\transportnsw\servicetesting\steps\StopFinderSteps.class
+com\nsw\transportnsw\suiterunner\SuiteRunnerTest.class
+com\nsw\transportnsw\uitesting\steps\WebHooks.class
