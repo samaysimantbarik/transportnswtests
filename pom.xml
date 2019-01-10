@@ -15,6 +15,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
+		<environment>remote</environment>
 	</properties>
 
 	<dependencies>
@@ -54,7 +55,7 @@
 			<artifactId>rest-assured</artifactId>
 			<version>3.1.1</version>
 		</dependency>
-	<!-- https://mvnrepository.com/artifact/org.json/json -->
+		<!-- https://mvnrepository.com/artifact/org.json/json -->
 		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
@@ -75,7 +76,7 @@
 			<version>LATEST</version>
 		</dependency>
 
-		
+
 		<dependency>
 			<groupId>io.cucumber</groupId>
 			<artifactId>cucumber-spring</artifactId>
@@ -98,37 +99,158 @@
 			<artifactId>slf4j-jdk14</artifactId>
 			<version>1.7.13</version>
 		</dependency>
+
+<!-- SERENITY DEPENDENCIES -->
+
+<!-- https://mvnrepository.com/artifact/net.serenity-bdd/serenity-core -->
+<dependency>
+    <groupId>net.serenity-bdd</groupId>
+    <artifactId>serenity-core</artifactId>
+    <version>2.0.30</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/net.serenity-bdd/serenity-reports -->
+<dependency>
+    <groupId>net.serenity-bdd</groupId>
+    <artifactId>serenity-reports</artifactId>
+    <version>2.0.30</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/net.serenity-bdd/serenity-rest-assured -->
+<dependency>
+    <groupId>net.serenity-bdd</groupId>
+    <artifactId>serenity-rest-assured</artifactId>
+    <version>2.0.30</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/net.serenity-bdd/serenity-cucumber -->
+<dependency>
+    <groupId>net.serenity-bdd</groupId>
+    <artifactId>serenity-cucumber</artifactId>
+    <version>1.9.22</version>
+</dependency>
+
+
 	</dependencies>
 
 	<build>
 		<plugins>
+
+ <plugin>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>${maven.failsafe.plugin.version}</version>
+                <configuration>
+                    <includes>
+                        <include>**/*.java</include>
+                    </includes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>net.serenity-bdd.maven.plugins</groupId>
+                <artifactId>serenity-maven-plugin</artifactId>
+                <version>${serenity.maven.version}</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>net.serenity-bdd</groupId>
+                        <artifactId>serenity-core</artifactId>
+                        <version>${serenity.version}</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <id>serenity-reports</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>aggregate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
 			<plugin>
-				<groupId>net.masterthought</groupId>
-				<artifactId>maven-cucumber-reporting</artifactId>
-				<version>3.11.0</version>
+				<groupId>com.github.temyers</groupId>
+				<artifactId>cucumber-jvm-parallel-plugin</artifactId>
+				<version>4.0.0</version>
 				<executions>
 					<execution>
-						<id>execution</id>
-						<phase>test</phase>
+						<id>generateRunners</id>
+						<phase>validate</phase>
 						<goals>
-							<goal>generate</goal>
+							<goal>generateRunners</goal>
 						</goals>
 						<configuration>
-							<projectName>Test Automation Report</projectName>
-							<outputDirectory>${project.build.directory}/</outputDirectory>
-							<cucumberOutput>${project.build.directory}/cucumber-json-report/report.json</cucumberOutput>
-							<skippedFails>true</skippedFails>
-							<enableFlashCharts>true</enableFlashCharts>
+							<glue>
+								<pakage>com.nsw.transportnsw.steps</pakage>
+							</glue>
+							<featuresDirectory>src/test/resources/features</featuresDirectory>
+							<cucumberOutputDir>${project.build.directory}/cucumber-parallel</cucumberOutputDir>
+							<format>json,html</format>
+							<tags>
+								<tag>@UI</tag>
+							</tags>
+							<!-- The naming scheme to use for the generated test classes. One 
+								of 'simple' or 'feature-title' -->
+							<namingScheme>simple</namingScheme>
+							<!-- The class naming pattern to use. Only required/used if naming 
+								scheme is 'pattern'. -->
+							<namingPattern>Parallel{c}Test</namingPattern>
+							<!-- One of [SCENARIO, FEATURE]. SCENARIO generates one runner per 
+								scenario. FEATURE generates a runner per feature. -->
+							<parallelScheme>SCENARIO</parallelScheme>
 						</configuration>
 					</execution>
 				</executions>
 			</plugin>
-
+			<plugin>
+				<groupId>com.trivago.rta</groupId>
+				<artifactId>cluecumber-report-plugin</artifactId>
+				<version>1.0.0</version>
+				<executions>
+					<execution>
+						<id>report</id>
+						<phase>post-integration-test</phase>
+						<goals>
+							<goal>reporting</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<sourceJsonReportDirectory>${project.build.directory}\cucumber-parallel</sourceJsonReportDirectory>
+					<generatedHtmlReportDirectory>${project.build.directory}\test-report</generatedHtmlReportDirectory>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.20.1</version>
+				<configuration>
+					<forkCount>10</forkCount>
+					<reuseForks>true</reuseForks>
+					<includes>
+						<include>**/*IT.class</include>
+					</includes>
+					<testFailureIgnore>true</testFailureIgnore>
+
+					<systemPropertyVariables>
+						<ENVIRONMENT>${environment}</ENVIRONMENT>
+					</systemPropertyVariables>
+				</configuration>
+
 			</plugin>
 		</plugins>
+
 	</build>
 </project>

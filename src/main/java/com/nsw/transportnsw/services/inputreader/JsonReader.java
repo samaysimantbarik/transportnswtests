@@ -24,7 +24,7 @@ public class JsonReader {
 	@Autowired
 	RequestObject requestObject;
 
-	public JSONObject extractScenarioData(String scenarioName) throws Exception {
+	private JSONObject extractScenarioData(String scenarioName) throws Exception {
 		Boolean testdatafound = false;
 		for (int num_scenarios = 0; num_scenarios < featuredata.length(); num_scenarios++) {
 			if (featuredata.getJSONObject(num_scenarios).getString("scenarioname").equals(scenarioName)) {
@@ -38,11 +38,11 @@ public class JsonReader {
 		return scenariodata;
 	}
 
-	public void readFile(String testfile) throws FileNotFoundException, IOException {
+	private void readFile(String testfile) throws FileNotFoundException, IOException {
 		File file = new File(testfile);
 		String content = FileUtils.readFileToString(file, "utf-8");
-		JSONObject tomJsonObject = new JSONObject(content);
-		featuredata = (JSONArray) tomJsonObject.get("feature");
+		JSONObject jsonObject = new JSONObject(content);
+		featuredata = (JSONArray) jsonObject.get("feature");
 	}
 
 	public void createRequestObject(String testfile, String scenarioName) throws Exception {

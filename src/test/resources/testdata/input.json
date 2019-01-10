@@ -1,7 +1,37 @@
 {
 	"feature": [
 	  {
+		"scenarioname": "A stop providing multiple transport options can be located2",
+		"endpoint": "/web/XML_STOPFINDER_REQUEST",
+		"method": "get",
+		"contenttype":"ContentType.JSON",
+		"queryparams": {
+			"TfNSWSF": true,
+			"language": "en",
+			"name_sf": "xyz",
+			"outputFormat": "rapidJSON",
+			"type_sf": "any",
+			"version": "10.2.2.48"
+		                       },
+		"headerparams": {}
+	},
+	{
 		"scenarioname": "A stop providing multiple transport options can be located",
+		"endpoint": "/web/XML_STOPFINDER_REQUEST",
+		"method": "get",
+		"contenttype":"ContentType.JSON",
+		"queryparams": {
+			"TfNSWSF": true,
+			"language": "en",
+			"name_sf": "xyz",
+			"outputFormat": "rapidJSON",
+			"type_sf": "any",
+			"version": "10.2.2.48"
+		                       },
+		"headerparams": {}
+	},
+	{
+		"scenarioname": "A stop providing multiple transport options can be located3",
 		"endpoint": "/web/XML_STOPFINDER_REQUEST",
 		"method": "get",
 		"contenttype":"ContentType.JSON",
